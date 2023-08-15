@@ -56,6 +56,8 @@ public class EditUserActivity extends AppCompatActivity {
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 2;
 
+    private static final String URL_SERVER = "http://192.168.100.23:3000";
+
     Context context = null;
 
     private Integer id;
@@ -398,7 +400,7 @@ public class EditUserActivity extends AppCompatActivity {
 
 
     private void createAndExecutePutRequest() {
-        String url = "http://192.168.100.23:3000/usuarios/" + this.id;
+        String url = URL_SERVER + "/usuarios/" + this.id;
 
         try {
             if (!validateCanSend()) {

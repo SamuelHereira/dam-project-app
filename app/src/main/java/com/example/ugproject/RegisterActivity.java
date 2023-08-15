@@ -55,6 +55,9 @@ public class RegisterActivity extends AppCompatActivity implements LocationCallb
 
     private static final int REQUEST_PERMISSION = 1;
     private static final int REQUEST_IMAGE_GET = 2;
+
+    private static final String URL_SERVER = "http://192.168.100.23:3000";
+
     private static String fileName = null;
     //     layout
     public MapView mapView = null;
@@ -442,7 +445,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationCallb
     }
 
     private void createAndExecutePostRequest() {
-        String url = "http://192.168.100.23:3000/usuarios/create";
+        String url = URL_SERVER + "/usuarios/create";
 
         try {
             if (!validateCanSend()) {

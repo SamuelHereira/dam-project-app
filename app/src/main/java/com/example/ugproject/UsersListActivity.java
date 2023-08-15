@@ -36,6 +36,9 @@ public class UsersListActivity extends AppCompatActivity {
 
     private Context context;
 
+    private static final String URL_SERVER = "http://192.168.100.23:3000";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +89,7 @@ public class UsersListActivity extends AppCompatActivity {
         AlertDialog loadingDialog = Alerts.showLoadingDialog(this);
 
 
-        String url = "http://192.168.100.23:3000/usuarios";
+        String url = URL_SERVER + "/usuarios";
 
         try {
             CustomGetAsyncTask customGetAsyncTask = new CustomGetAsyncTask(this,
