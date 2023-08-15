@@ -3,10 +3,12 @@ package com.example.ugproject;
 import android.Manifest;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -27,17 +29,23 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.ugproject.adapters.UsuarioAdapter;
 import com.example.ugproject.api.CustomPostAsyncTask;
 import com.example.ugproject.api.CustomPutAsyncTask;
+import com.example.ugproject.db.DbController;
+import com.example.ugproject.models.Usuario;
 import com.example.ugproject.utils.Alerts;
 import com.example.ugproject.utils.UriUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +67,9 @@ public class EditUserActivity extends AppCompatActivity {
     private static final String URL_SERVER = "http://192.168.100.23:3000";
 
     Context context = null;
+    private Usuario usuarioEdit = null;
+    private UsuarioAdapter estudiantesAdapter;
+
 
     private Integer id;
     private String actualPdfUrl, fileName, saludo, pdfPath, imagePath;
@@ -82,6 +93,10 @@ public class EditUserActivity extends AppCompatActivity {
 
         id = bundle.getInt("id");
 
+        usuarioEdit = DbController.obtenerEstudiantePorId(context, id);
+
+        Log.println(Log.ASSERT, "USUARIO EDIT", usuarioEdit.toString());
+
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         // Manejar el evento del botón de regreso
@@ -94,19 +109,7 @@ public class EditUserActivity extends AppCompatActivity {
 
         Log.println(Log.INFO, "id", id.toString());
 
-        String nombre = bundle.getString("nombre");
-        String apellido = bundle.getString("apellido");
-        String cedula = bundle.getString("cedula");
-        String correo = bundle.getString("correo");
-        String celular = bundle.getString("celular");
-        String direccion = bundle.getString("direccion");
-        String carrera = bundle.getString("carrera");
-        Integer semestre = bundle.getInt("semestre");
-        String saludo = bundle.getString("saludo");
-        String titulo = bundle.getString("titulo");
-        String foto = bundle.getString("foto");
-        String latitud = bundle.getString("latitud");
-        String longitud = bundle.getString("longitud");
+
 
 
         txtNombre = findViewById(R.id.txtNombre);
@@ -127,18 +130,16 @@ public class EditUserActivity extends AppCompatActivity {
         this.saludo = saludo;
 
 
-        txtNombre.setText(nombre);
-        txtApellido.setText(apellido);
-        txtCedula.setText(cedula);
-        txtCorreo.setText(correo);
-        txtCelular.setText(celular);
-        txtDireccion.setText(direccion);
-        txtCarrera.setText(carrera);
-        txtSemestre.setText(semestre.toString());
-        txtLatitud.setText(latitud);
-        txtLongitud.setText(longitud);
-
-        actualPdfUrl = titulo;
+        txtNombre.setText(usuarioEdit.getNombre());
+        txtApellido.setText(usuarioEdit.getApellido());
+        txtCedula.setText(usuarioEdit.getCedula());
+        txtCorreo.setText(usuarioEdit.getCorreo());
+        txtCelular.setText(usuarioEdit.getCelular());
+        txtDireccion.setText(usuarioEdit.getDireccion());
+        txtCarrera.setText(usuarioEdit.getCarrera());
+        txtSemestre.setText(usuarioEdit.getSemestre());
+        txtLatitud.setText(usuarioEdit.getLatitud_gps());
+        txtLongitud.setText(usuarioEdit.getLongitud_gps());
 
         ActivityCompat.requestPermissions( this,
                 new String[]{
@@ -150,9 +151,10 @@ public class EditUserActivity extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.imageView2);
         imageView.setVisibility(View.VISIBLE);
 
-        Glide.with(this)
-                .load(foto)
-                .into(imageView);
+
+
+        Log.println(Log.ASSERT, "Foto", usuarioEdit.getFoto().toString());
+        Glide.with(context).load(usuarioEdit.getFoto()).into(imageView);
 
 
         // request permissions
@@ -192,15 +194,15 @@ public class EditUserActivity extends AppCompatActivity {
         if (requestCode == 3 && resultCode == RESULT_OK && data != null) {
             uriImage = data.getData();
 
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uriImage);
-                if (bitmap.getByteCount() > 1000000) {
-                    Toast.makeText(this, "La imagen es muy pesada", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uriImage);
+//                if (bitmap.getByteCount() > 1000000) {
+//                    Toast.makeText(this, "La imagen es muy pesada", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
             ImageView imageView = findViewById(R.id.imageView2);
             imageView.setImageURI(uriImage);
@@ -238,10 +240,6 @@ public class EditUserActivity extends AppCompatActivity {
 
         if (requestCode == 4 && resultCode == RESULT_OK && data != null) {
             uriPdf = data.getData();
-
-
-
-
             try {
                 // Open an InputStream from the selected image Uri
                 InputStream inputStream = getContentResolver().openInputStream(uriPdf);
@@ -400,7 +398,6 @@ public class EditUserActivity extends AppCompatActivity {
 
 
     private void createAndExecutePutRequest() {
-        String url = URL_SERVER + "/usuarios/" + this.id;
 
         try {
             if (!validateCanSend()) {
@@ -408,86 +405,88 @@ public class EditUserActivity extends AppCompatActivity {
                 return;
             }
 
+            usuarioEdit.setCedula(txtCedula.getText().toString());
+            usuarioEdit.setNombre(txtNombre.getText().toString());
+            usuarioEdit.setApellido(txtApellido.getText().toString());
+            usuarioEdit.setCorreo(txtCorreo.getText().toString());
+            usuarioEdit.setCelular(txtCelular.getText().toString());
+            usuarioEdit.setDireccion(txtDireccion.getText().toString());
+            usuarioEdit.setCarrera(txtCarrera.getText().toString());
+            usuarioEdit.setSemestre(txtSemestre.getText().toString());
+            usuarioEdit.setLatitud_gps(txtLatitud.getText().toString());
+            usuarioEdit.setLongitud_gps(txtLongitud.getText().toString());
+
+            Log.println(Log.ASSERT, "EDIT", usuarioEdit.toString());
+
             File saludo = null, foto = null, titulo = null;
+
+
 
             try {
                 saludo = new File(fileName);
+                byte[] bytesSaludo = new byte[(int) saludo.length()];
+                try (FileInputStream fis = new FileInputStream(saludo)) {
+                    fis.read(bytesSaludo);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             try {
-                foto = new File(imagePath);
+                byte[] bytesImage = readBytesFromUri(getContentResolver(), uriImage);
+                usuarioEdit.setFoto(bytesImage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             try {
-                titulo = new File(pdfPath);
+                byte[] bytesPdf = readBytesFromUri(getContentResolver(), uriPdf);
+                usuarioEdit.setTitulo(bytesPdf);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-
-            JSONObject requestBodyJson = new JSONObject();
-            requestBodyJson.put("cedula", this.txtCedula.getText());
-            requestBodyJson.put("nombre", this.txtNombre.getText());
-            requestBodyJson.put("apellido", this.txtApellido.getText());
-            requestBodyJson.put("correo", this.txtCorreo.getText());
-            requestBodyJson.put("celular", this.txtCelular.getText());
-            requestBodyJson.put("direccion", this.txtDireccion.getText());
-            requestBodyJson.put("carrera", this.txtCarrera.getText());
-            requestBodyJson.put("semestre", this.txtSemestre.getText());
-            requestBodyJson.put("latitud_gps", this.txtLatitud.getText());
-            requestBodyJson.put("longitud_gps", this.txtLongitud.getText());
+            DbController db = new DbController(context);
+            db.modificarEstudiante(context, usuarioEdit);
 
 
-            List<CustomPutAsyncTask.FileItem> files = new ArrayList<>();
-            if (saludo != null) {
-                files.add(new CustomPutAsyncTask.FileItem(saludo, "saludo", saludo.getName()));
-            }
-            if (foto != null) {
-                files.add(new CustomPutAsyncTask.FileItem(foto, "foto", foto.getName()));
-            }
-            if (titulo != null) {
-                files.add(new CustomPutAsyncTask.FileItem(titulo, "titulo", titulo.getName()));
-            }
 
-            Log.println(Log.INFO, "files", files.toString());
-
-            CustomPutAsyncTask customPostAsyncTask = new CustomPutAsyncTask(this, url, requestBodyJson, files, new CustomPutAsyncTask.OnResultListener() {
-                @Override
-                public void onSuccess(String result) {
-                    JSONObject jsonObject = null;
-                    try {
-                        jsonObject = new JSONObject(result);
-                        Integer statusCode = jsonObject.getInt("statusCode");
-
-                        if (statusCode == 200) {
-                            // show alert
-                            Alerts.showAlertDialogWithText(context, "Usuario actualizado correctamente", "Aceptar");
-                        } else {
-                            String mensaje = jsonObject.getString("message");
-                            Alerts.showAlertDialogWithText(context, mensaje, "Aceptar");
-                        }
-                    } catch (JSONException e) {
-                        String mensaje = "Error al registrar usuario";
-                        Alerts.showAlertDialogWithText(context, mensaje, "Aceptar");
-                    }
-                }
-
-                @Override
-                public void onError(String result) {
-                    Alerts.showAlertDialogWithText(context, "Error al registrar usuario", "Aceptar");
-                }
-            });
-
-            customPostAsyncTask.execute();
+            // show alert
+            Alerts.showAlertDialogWithText(context, "Usuario actualizado correctamente", "Aceptar");
+            List<Usuario> estudiantesList = DbController.obtenerEstudiantes(context);
+            estudiantesAdapter.refreshEstudiantes(estudiantesList);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private byte[] readBytesFromUri(ContentResolver contentResolver, Uri uri) throws IOException {
+        InputStream inputStream = contentResolver.openInputStream(uri);
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        if (inputStream != null) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            inputStream.close();
+        }
+        return byteBuffer.toByteArray();
+    }
+
+    private byte[] imagemTratada(byte[] imagem_img){
+
+        while (imagem_img.length > 500000){
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imagem_img, 0, imagem_img.length);
+            Bitmap resized = Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*0.8), (int)(bitmap.getHeight()*0.8), true);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            resized.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            imagem_img = stream.toByteArray();
+        }
+        return imagem_img;
+
+    }
 
 }

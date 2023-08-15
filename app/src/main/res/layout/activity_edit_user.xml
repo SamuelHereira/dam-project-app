@@ -273,7 +273,10 @@
                     android:layout_height="wrap_content"
                     android:onClick="handleDownloadPdf"
                     android:layout_marginLeft="10dp"
+                    android:visibility="gone"
                     android:text="Descargar archivo" />
+
+
                 </LinearLayout>
 
 

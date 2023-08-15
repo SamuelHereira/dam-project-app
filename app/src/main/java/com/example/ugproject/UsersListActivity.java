@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ugproject.adapters.UsuarioAdapter;
 import com.example.ugproject.api.CustomGetAsyncTask;
+import com.example.ugproject.db.DbController;
 import com.example.ugproject.models.Usuario;
 import com.example.ugproject.utils.Alerts;
 
@@ -23,20 +24,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class UsersListActivity extends AppCompatActivity {
-
+    private DbController db = new DbController(this);
     private RecyclerView recyclerView;
     private UsuarioAdapter userAdapter;
 
-    private EditText txtSearch;
+    private EditText txtSearch, txtSearchId;
     private Button btnSearch;
-    private ArrayList<Usuario> listaUsuarios = null;
+    private List<Usuario> listaUsuarios = null;
 
     private Context context;
-
-    private static final String URL_SERVER = "http://192.168.100.23:3000";
 
 
     @Override
@@ -64,17 +64,29 @@ public class UsersListActivity extends AppCompatActivity {
 //            }
 //        });
 
-        txtSearch = findViewById(R.id.txtSearch);
+        txtSearch = findViewById(R.id.txtSearch2);
         btnSearch = findViewById(R.id.btnSearch);
+        Button btnRefresh = findViewById(R.id.btnRefresh);
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String search = txtSearch.getText().toString();
+//                if (search.isEmpty()) {
+//                    Alerts.showAlertDialogWithText(context, "Error", "Debe ingresar un texto para buscar");
+//                    return;
+//                }
+                createAndExecuteGetRequest(search);
+            }
+        });
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String search = txtSearch.getText().toString();
-                if (search.isEmpty()) {
-                    Alerts.showAlertDialogWithText(context, "Error", "Debe ingresar un texto para buscar");
-                    return;
-                }
+//                if (search.isEmpty()) {
+//                    Alerts.showAlertDialogWithText(context, "Error", "Debe ingresar un texto para buscar");
+//                    return;
+//                }
                 createAndExecuteGetRequest(search);
             }
         });
@@ -88,84 +100,37 @@ public class UsersListActivity extends AppCompatActivity {
 
         AlertDialog loadingDialog = Alerts.showLoadingDialog(this);
 
+        if (search.isEmpty()) {
 
-        String url = URL_SERVER + "/usuarios";
+            listaUsuarios = DbController.obtenerEstudiantes(this);
+            Log.println(Log.ASSERT, "users", listaUsuarios.get(0).getId().toString());
 
-        try {
-            CustomGetAsyncTask customGetAsyncTask = new CustomGetAsyncTask(this,
-                    url, search, new CustomGetAsyncTask.OnResultListener() {
-                @Override
-                public void onSuccess(String result) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-                        Integer statusCode = jsonObject.getInt("statusCode");
+        } else {
+            String[] columnasBusqueda = {
+                    DbController.ColNombre,
+                    DbController.ColApellido,
+                    DbController.ColCedula,
+                    DbController.ColCarrera,
+                    DbController.ColSemestre
+            };
 
-                        if (statusCode != 200) {
-                            Alerts.showAlertDialogWithText(UsersListActivity.this, "Error", "Error al obtener usuarios");
-                            return;
-                        }
-
-                        listaUsuarios.clear();
-
-                        JSONArray usuariosArray = jsonObject.getJSONArray("usuarios");
-
-                        String urlFile = "http://192.168.100.23:3000/archivo/";
-
-                        for (int i = 0; i < usuariosArray.length(); i++) {
-                            JSONObject usuarioObject = usuariosArray.getJSONObject(i);
-                            Usuario usuario = new Usuario();
-                            usuario.setId(usuarioObject.getInt("id"));
-                            usuario.setCedula(usuarioObject.getString("cedula"));
-                            usuario.setNombre(usuarioObject.getString("nombre"));
-                            usuario.setApellido(usuarioObject.getString("apellido"));
-                            usuario.setCorreo(usuarioObject.getString("correo"));
-                            usuario.setCelular(usuarioObject.getString("celular"));
-                            usuario.setDireccion(usuarioObject.getString("direccion"));
-                            usuario.setCarrera(usuarioObject.getString("carrera"));
-                            usuario.setSemestre(usuarioObject.getInt("semestre"));
-                            usuario.setTitulo(urlFile + usuarioObject.getString("titulo"));
-                            usuario.setFoto(urlFile + usuarioObject.getString("foto"));
-                            usuario.setSaludo(urlFile + usuarioObject.getString("saludo"));
-                            usuario.setLatitud_gps(usuarioObject.getString("latitud_gps"));
-                            usuario.setLongitud_gps(usuarioObject.getString("longitud_gps"));
-
-                            Log.println(Log.INFO, "Usuario Foto", usuario.getFoto());
-
-
-                            listaUsuarios.add(usuario);
-                        }
-
-                        userAdapter = new UsuarioAdapter(listaUsuarios);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        recyclerView.setAdapter(userAdapter);
-
-                        if (listaUsuarios.size() == 0)
-                            Alerts.showAlertDialogWithText(UsersListActivity.this, "Error", "No se encontraron usuarios");
-
-
-                        loadingDialog.dismiss();
-
-                    } catch (JSONException e) {
-                        loadingDialog.dismiss();
-                        Alerts.showAlertDialogWithText(UsersListActivity.this, "Error", "Error al obtener usuarios");
-
-                    }
-
-
-                }
-
-                @Override
-                public void onError(String result) {
-                    loadingDialog.dismiss();
-                    Alerts.showAlertDialogWithText(UsersListActivity.this, "Error", result);
-                }
-            });
-
-            customGetAsyncTask.execute();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            listaUsuarios = DbController.buscarEstudiantes(
+                    this, columnasBusqueda, search.toString(), null
+            );
         }
+
+
+        userAdapter = new UsuarioAdapter(listaUsuarios, context);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(userAdapter);
+
+        if (listaUsuarios.size() == 0)
+            Alerts.showAlertDialogWithText(UsersListActivity.this, "Error", "No se encontraron usuarios");
+
+        loadingDialog.dismiss();
+
+
     }
+
+
 }

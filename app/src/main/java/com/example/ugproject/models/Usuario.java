@@ -1,5 +1,6 @@
 package com.example.ugproject.models;
 
+
 public class Usuario {
 
     private Integer id;
@@ -10,15 +11,17 @@ public class Usuario {
     private String celular;
     private String direccion;
     private String carrera;
-    private Integer semestre;
-    private String titulo;
-    private String foto;
-    private String saludo;
+    private String semestre;
+    private byte[] titulo;
+    private byte[] foto;
+    private byte[] saludo;
+
+
+    private String estado;
 
     private String latitud_gps;
 
     private String longitud_gps;
-
 
 
     public Usuario(
@@ -32,12 +35,13 @@ public class Usuario {
         this.celular = "";
         this.direccion = "";
         this.carrera = "";
-        this.semestre = 0;
-        this.titulo = "";
-        this.foto = "";
-        this.saludo = "";
+        this.semestre = "";
+        this.titulo = null;
+        this.foto = null;
+        this.saludo = null;
         this.latitud_gps = "";
         this.longitud_gps = "";
+        this.estado = "A";
     }
 
     public Usuario(
@@ -49,10 +53,10 @@ public class Usuario {
             String celular,
             String direccion,
             String carrera,
-            Integer semestre,
-            String titulo,
-            String foto,
-            String saludo,
+            String semestre,
+            byte[] titulo,
+            byte[] foto,
+            byte[] saludo,
             String latitud_gps,
             String longitud_gps
     ) {
@@ -136,35 +140,35 @@ public class Usuario {
         this.carrera = carrera;
     }
 
-    public Integer getSemestre() {
+    public String getSemestre() {
         return semestre;
     }
 
-    public void setSemestre(Integer semestre) {
+    public void setSemestre(String semestre) {
         this.semestre = semestre;
     }
 
-    public String getTitulo() {
+    public byte[] getTitulo() {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
+    public void setTitulo(byte[] titulo) {
         this.titulo = titulo;
     }
 
-    public String getFoto() {
+    public byte[] getFoto() {
         return foto;
     }
 
-    public void setFoto(String foto) {
+    public void setFoto(byte[] foto) {
         this.foto = foto;
     }
 
-    public String getSaludo() {
+    public byte[] getSaludo() {
         return saludo;
     }
 
-    public void setSaludo(String saludo) {
+    public void setSaludo(byte[] saludo) {
         this.saludo = saludo;
     }
 
@@ -182,5 +186,13 @@ public class Usuario {
 
     public void setLongitud_gps(String longitud_gps) {
         this.longitud_gps = longitud_gps;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

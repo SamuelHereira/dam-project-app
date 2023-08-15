@@ -97,7 +97,15 @@
             android:layout_height="wrap_content"
             android:text="Descargar titulo"
             android:layout_marginTop="8dp"
-            android:onClick="downloadAndOpenPdf" /> <!-- Agrega el atributo onClick -->
+            android:onClick="downloadAndOpenPdf" />
+
+        <Button
+            android:id="@+id/btnViewGPS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:onClick="handleViewPosition"
+            android:text="Ver ubicación" /> <!-- Agrega el atributo onClick -->
         ``
 
     </LinearLayout>

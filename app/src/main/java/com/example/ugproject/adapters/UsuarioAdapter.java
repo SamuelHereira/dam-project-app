@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -27,6 +28,8 @@ import com.example.ugproject.R;
 import com.example.ugproject.models.Usuario;
 import com.example.ugproject.utils.Alerts;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -34,9 +37,14 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
 
     private List<Usuario> userList;
 
-    public UsuarioAdapter(List<Usuario> userList) {
+    Context context;
+
+
+    public UsuarioAdapter(List<Usuario> userList, Context context) {
         this.userList = userList;
+        this.context = context;
     }
+
 
 
     @NonNull
@@ -63,34 +71,23 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
         Context context = holder.itemView.getContext();
         Glide.with(context).load(user.getFoto()).into(holder.imgUser);
 
-        Log.println(Log.INFO, "UsuarioAdapter saludo", user.getSaludo());
 
 
 // Configurar el botón para reproducir audio
         holder.buttonPlayAudio.setOnClickListener(v -> playAudio(user.getSaludo(), context));
         holder.buttonViewPdf.setOnClickListener(v -> downloadAndOpenPdf(user.getTitulo(), context));
-
+        holder.buttonViewPosition.setOnClickListener(
+                v -> handleViewPosition(user.getLatitud_gps(), user.getLongitud_gps())
+        );
 
         holder.itemView.setOnClickListener(v -> {
             // Abrir la actividad de edición de usuario
-            Intent intent = new Intent(context, EditUserActivity.class);
+            Intent intent = new Intent(this.context, EditUserActivity.class);
             intent.putExtra("id", user.getId());
-            intent.putExtra("nombre", user.getNombre());
-            intent.putExtra("apellido", user.getApellido());
-            intent.putExtra("cedula", user.getCedula());
-            intent.putExtra("correo", user.getCorreo());
-            intent.putExtra("celular", user.getCelular());
-            intent.putExtra("direccion", user.getDireccion());
-            intent.putExtra("carrera", user.getCarrera());
-            intent.putExtra("semestre", user.getSemestre());
-            intent.putExtra("saludo", user.getSaludo());
-            intent.putExtra("foto", user.getFoto());
-            intent.putExtra("titulo", user.getTitulo());
-            intent.putExtra("latitud", user.getLatitud_gps());
-            intent.putExtra("longitud", user.getLongitud_gps());
 
-            context.startActivity(intent);
+            this.context.startActivity(intent);
         });
+
 
     }
 
@@ -99,8 +96,29 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
         return userList.size();
     }
 
-    private void playAudio(String audioUrl, Context context) {
+    private void handleViewPosition(String latitude, String longitude) {
+        // Construct the Google Maps URL with the latitude and longitude
+        String mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude;
+
+        // Create an Intent with the ACTION_VIEW action and the URL
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mapsUrl));
+
+        // Check if there's an app to handle the intent before starting
+        if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(mapIntent);
+        } else {
+            // Handle the case where a web browser is not available
+        }
+    }
+
+    private void playAudio(byte[] audio, Context context) {
         try {
+            String tempFileName = "temp_saludo.mp3";
+            File tempFile = new File(context.getCacheDir(), tempFileName);
+
+            FileOutputStream fos = new FileOutputStream(tempFile);
+            fos.write(audio);
+            fos.close();
 
             MediaPlayer mediaPlayer = new MediaPlayer();
             mediaPlayer = new MediaPlayer();
@@ -108,7 +126,7 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build());
-            mediaPlayer.setDataSource(audioUrl);
+            mediaPlayer.setDataSource(tempFile.getPath());
             mediaPlayer.prepareAsync();
             // Set up OnPreparedListener to start playback when prepared
             mediaPlayer.setOnPreparedListener(mp -> {
@@ -129,27 +147,19 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
 
     }
 
-    private void downloadAndOpenPdf(String pdfUrl, Context context) {
-        // Aquí puedes utilizar una librería para descargar el PDF desde la URL,
-        // como DownloadManager u otras bibliotecas de gestión de descargas.
-
-        // Por ejemplo, utilizando DownloadManager (asegúrate de manejar las excepciones correctamente):
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(pdfUrl));
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "archivo.pdf");
-
-        long downloadId = downloadManager.enqueue(request);
-
-        // También puedes abrir el PDF después de la descarga utilizando un intent
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(pdfUrl), "application/pdf");
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
+    private void downloadAndOpenPdf(byte[] pdf, Context context) {
         try {
+            String pdfFileName = "pdfTemp.pdf";
+            File pdfFile = new File(context.getCacheDir(), pdfFileName);
+            FileOutputStream fos = new FileOutputStream(pdfFile);
+            fos.write(pdf);
+            fos.close();
+            Uri pdfUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", pdfFile);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(pdfUri, "application/pdf");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             context.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
+        } catch (Exception e) {
             // Manejar caso en el que no haya una aplicación para abrir PDFs instalada
             e.printStackTrace();
         }
@@ -161,7 +171,7 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
         TextView txtNombre, txtCedula, txtCorreo, txtCelular, txtDireccion, txtCarrera, txtSemestre;
         ImageView imgUser;
 
-        Button buttonPlayAudio, buttonViewPdf;
+        Button buttonPlayAudio, buttonViewPdf, buttonViewPosition;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -177,10 +187,16 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
 
             buttonPlayAudio = itemView.findViewById(R.id.buttonPlayAudio);
             buttonViewPdf = itemView.findViewById(R.id.buttonViewPdf);
+            buttonViewPosition = itemView.findViewById(R.id.btnViewGPS);
 
 
 
         }
+    }
+
+    public void refreshEstudiantes(List<Usuario> nuevosEstudiantes) {
+        userList = nuevosEstudiantes;
+        notifyDataSetChanged();
     }
 
 

@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.ugproject.utils.Alerts;
+
 public class MainActivity extends AppCompatActivity {
 
     public TextView registerButton;
@@ -36,6 +38,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void handleLogin(View view) {
+        if(txtUser.getText().toString().isEmpty() ||
+            txtUser.getError() != null ||
+                txtPassword.getText().toString().isEmpty()
+        ) {
+            Alerts.showAlertDialogWithText(
+                    this, "Error", "Complete los datos de inicio de sesión"
+            );
+            return;
+        }
         Intent i = new Intent(this,UsersListActivity.class);
         startActivity(i);
     }

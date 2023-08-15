@@ -1,9 +1,12 @@
 package com.example.ugproject;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -24,6 +27,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.ugproject.api.CustomPostAsyncTask;
+import com.example.ugproject.db.DbController;
+import com.example.ugproject.models.Usuario;
 import com.example.ugproject.services.CustomLocationProvider;
 import com.example.ugproject.services.LocationCallback;
 import com.example.ugproject.services.LocationService;
@@ -38,7 +43,9 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity implements LocationCallback {
+
+    private DbController db = new DbController(this);
     private static final int PICK_FROM_CAMERA = 7;
     private static final int REQUEST_LOCATION = 1;
     private static final String LOG_TAG = "AudioRecordTest";
@@ -198,8 +207,8 @@ public class RegisterActivity extends AppCompatActivity implements LocationCallb
 
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 3);
+//                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(intent, 3);
             } else {
                 // Handle permission denied case
             }
@@ -254,15 +263,8 @@ public class RegisterActivity extends AppCompatActivity implements LocationCallb
 
 
     public void handleSelectPhoto(View view) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
-        } else {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, 3);
-        }
-
     }
 
 
@@ -457,59 +459,69 @@ public class RegisterActivity extends AppCompatActivity implements LocationCallb
             File foto = new File(imagePath);
             File titulo = new File(pdfPath);
 
-            JSONObject requestBodyJson = new JSONObject();
-            requestBodyJson.put("cedula", this.txtCedula.getText());
-            requestBodyJson.put("nombre", this.txtNombre.getText());
-            requestBodyJson.put("apellido", this.txtApellido.getText());
-            requestBodyJson.put("correo", this.txtEmail.getText());
-            requestBodyJson.put("celular", this.txtCelular.getText());
-            requestBodyJson.put("direccion", this.txtDireccion.getText());
-            requestBodyJson.put("carrera", this.txtCarrera.getText());
-            requestBodyJson.put("semestre", this.txtSemestre.getText());
-            requestBodyJson.put("latitud_gps", this.latitude);
-            requestBodyJson.put("longitud_gps", this.altitude);
+            byte[] bytesSaludo = new byte[(int) saludo.length()];
+            try (FileInputStream fis = new FileInputStream(saludo)) {
+                fis.read(bytesSaludo);
+            }
+            byte[] bytesImage = readBytesFromUri(getContentResolver(), uriImage);
+            byte[] bytesPdf = readBytesFromUri(getContentResolver(), uriPdf);
+
+            Usuario newUsuario = new Usuario();
+            newUsuario.setCedula(txtCedula.getText().toString());
+            newUsuario.setNombre(txtNombre.getText().toString());
+            newUsuario.setApellido(txtApellido.getText().toString());
+            newUsuario.setCorreo(txtEmail.getText().toString());
+            newUsuario.setCelular(txtCelular.getText().toString());
+            newUsuario.setDireccion(txtDireccion.getText().toString());
+            newUsuario.setCarrera(txtCarrera.getText().toString());
+            newUsuario.setSemestre(txtSemestre.getText().toString());
+            newUsuario.setFoto(imagemTratada(bytesImage));
+            newUsuario.setSaludo(bytesSaludo);
+            newUsuario.setTitulo(bytesPdf);
+            newUsuario.setLatitud_gps(this.latitude);
+            newUsuario.setLongitud_gps(this.altitude);
+
+            long idnuevo = db.insertarEstudiante(newUsuario);
 
 
-            List<CustomPostAsyncTask.FileItem> files = new ArrayList<>();
-            files.add(new CustomPostAsyncTask.FileItem(saludo, "saludo", saludo.getName()));
-            files.add(new CustomPostAsyncTask.FileItem(foto, "foto", foto.getName()));
-            files.add(new CustomPostAsyncTask.FileItem(titulo, "titulo", titulo.getName()));
-
-            CustomPostAsyncTask customPostAsyncTask = new CustomPostAsyncTask(this, url, requestBodyJson, files, new CustomPostAsyncTask.OnResultListener() {
-                @Override
-                public void onSuccess(String result) {
-                    JSONObject jsonObject = null;
-                    try {
-                        jsonObject = new JSONObject(result);
-                        Integer statusCode = jsonObject.getInt("statusCode");
-
-                        if (statusCode == 200) {
                             // show alert
-                            Alerts.showAlertDialogWithText(context, "Usuario registrado correctamente", "Aceptar");
-                            resetAllFields();
-                        } else {
-                            String mensaje = jsonObject.getString("message");
-                            Alerts.showAlertDialogWithText(context, mensaje, "Aceptar");
-                        }
-                    } catch (JSONException e) {
-                        String mensaje = "Error al registrar usuario";
-                        Alerts.showAlertDialogWithText(context, mensaje, "Aceptar");
-                    }
-                }
+            Alerts.showAlertDialogWithText(context, "Usuario registrado correctamente con ID" + idnuevo, "Aceptar");
+            resetAllFields();
 
-                @Override
-                public void onError(String result) {
-                    Alerts.showAlertDialogWithText(context, "Error al registrar usuario", "Aceptar");
-                }
-            });
 
-            customPostAsyncTask.execute();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    private byte[] readBytesFromUri(ContentResolver contentResolver, Uri uri) throws IOException {
+        InputStream inputStream = contentResolver.openInputStream(uri);
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        if (inputStream != null) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            inputStream.close();
+        }
+        return byteBuffer.toByteArray();
+    }
+
+    private byte[] imagemTratada(byte[] imagem_img){
+
+        while (imagem_img.length > 500000){
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imagem_img, 0, imagem_img.length);
+            Bitmap resized = Bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*0.8), (int)(bitmap.getHeight()*0.8), true);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            resized.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            imagem_img = stream.toByteArray();
+        }
+        return imagem_img;
+
+    }
 
 }
+
 
 
