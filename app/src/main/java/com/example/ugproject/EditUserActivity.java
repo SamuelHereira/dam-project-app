@@ -120,7 +120,6 @@ public class EditUserActivity extends AppCompatActivity {
 
         btnSaludo = findViewById(R.id.btnSaludo);
         btnPlay = findViewById(R.id.btnPlay);
-        btnPlayUrl = findViewById(R.id.btnPlayUrl);
         btnDescargarPdf = findViewById(R.id.btnDescargarPDF);
 
         this.saludo = saludo;
@@ -138,8 +137,6 @@ public class EditUserActivity extends AppCompatActivity {
         txtLongitud.setText(longitud);
 
         actualPdfUrl = titulo;
-
-        recorder = new MediaRecorder();
 
         ActivityCompat.requestPermissions( this,
                 new String[]{
@@ -326,6 +323,8 @@ public class EditUserActivity extends AppCompatActivity {
 
         String url;
 
+        Log.println(Log.INFO, "saludo", saludo);
+
         if (recorder == null) {
             url = fileName;
         } else {
@@ -336,7 +335,7 @@ public class EditUserActivity extends AppCompatActivity {
         MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-
+        Log.println(Log.INFO, "url", url);
             mediaPlayer.setDataSource(url);
             mediaPlayer.prepareAsync();
             mediaPlayer.setOnPreparedListener(MediaPlayer::start);
@@ -350,6 +349,7 @@ public class EditUserActivity extends AppCompatActivity {
             // make something
             Alerts.showAlertDialogWithText(this, "Error", "Error al reproducir audio");
             mediaPlayer.release();
+            Log.println(Log.ERROR, "Error", e.toString());
         }
 
 

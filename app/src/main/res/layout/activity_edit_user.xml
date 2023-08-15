@@ -315,14 +315,7 @@
                         android:text="Escuchar grabación"
                         android:visibility="gone" />
 
-                    <Button
-                        android:id="@+id/btnPlayUrl"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="playRecording"
-                        android:layout_marginLeft="8dp"
-                        android:text="Escuchar grabación"
-                        android:visibility="visible" />
+
                 </LinearLayout>
             </LinearLayout>
 

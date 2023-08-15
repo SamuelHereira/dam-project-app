@@ -63,6 +63,9 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
         Context context = holder.itemView.getContext();
         Glide.with(context).load(user.getFoto()).into(holder.imgUser);
 
+        Log.println(Log.INFO, "UsuarioAdapter saludo", user.getSaludo());
+
+
 // Configurar el botón para reproducir audio
         holder.buttonPlayAudio.setOnClickListener(v -> playAudio(user.getSaludo(), context));
         holder.buttonViewPdf.setOnClickListener(v -> downloadAndOpenPdf(user.getTitulo(), context));
@@ -120,6 +123,7 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UserView
 
         } catch (IOException e) {
             Alerts.showAlertDialogWithText(context, "Error", "No se pudo reproducir el audio");
+            Log.e("AUDIO", "Error al reproducir audio", e);
         }
 
 

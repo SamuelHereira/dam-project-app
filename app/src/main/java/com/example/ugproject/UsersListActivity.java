@@ -122,7 +122,7 @@ public class UsersListActivity extends AppCompatActivity {
                             usuario.setSemestre(usuarioObject.getInt("semestre"));
                             usuario.setTitulo(urlFile + usuarioObject.getString("titulo"));
                             usuario.setFoto(urlFile + usuarioObject.getString("foto"));
-                            usuario.setSaludo(usuarioObject.getString("saludo"));
+                            usuario.setSaludo(urlFile + usuarioObject.getString("saludo"));
                             usuario.setLatitud_gps(usuarioObject.getString("latitud_gps"));
                             usuario.setLongitud_gps(usuarioObject.getString("longitud_gps"));
 
