@@ -48,6 +48,21 @@ public class UsersListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //initialize toolbar
+
+
+        // Habilitar el botón de regreso en la Toolbar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        // Manejar el evento del botón de regreso
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
         listaUsuarios = new ArrayList<>();
 
         recyclerView = findViewById(R.id.recyclerView);
@@ -103,7 +118,6 @@ public class UsersListActivity extends AppCompatActivity {
         if (search.isEmpty()) {
 
             listaUsuarios = DbController.obtenerEstudiantes(this);
-            Log.println(Log.ASSERT, "users", listaUsuarios.get(0).getId().toString());
 
         } else {
             String[] columnasBusqueda = {

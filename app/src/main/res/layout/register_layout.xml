@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- Agregar Toolbar en la parte superior -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.8"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_of_ui" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:title="Registro"
         app:navigationIcon="@drawable/ic_arrow_back"
+        app:subtitleTextColor="@color/white"
+        app:title="Registro"
+        app:titleTextColor="@color/white"
         tools:ignore="MissingConstraints" /> <!-- Agregar el icono de regreso -->
 
     <ScrollView
@@ -30,20 +37,19 @@
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
             android:paddingTop="20dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
 
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:text="Cedula" />
+                android:paddingTop="20dp">
 
                 <EditText
                     android:id="@+id/txtCedula"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
                     android:ems="10"
                     android:hint="Cedula"
                     android:inputType="text" />
@@ -52,91 +58,92 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
 
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:text="Nombre" />
+                android:paddingTop="20dp">
 
                 <EditText
                     android:id="@+id/txtNombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Nombre" />
+                    android:hint="Nombre"
+
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:text="Apellido" />
+                android:orientation="vertical"
+
+                android:paddingTop="20dp">
 
                 <EditText
                     android:id="@+id/txtApellido"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Apellido" />
+
+                    android:hint="Apellido"
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Correo" />
+                android:orientation="vertical"
+
+                android:paddingTop="20dp">
 
                 <EditText
                     android:id="@+id/txtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Correo" />
+
+                    android:hint="Correo"
+                    android:inputType="text" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Celular" />
+                android:orientation="vertical"
+
+                android:paddingTop="20dp">
 
                 <EditText
                     android:id="@+id/txtCelular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
                     android:ems="10"
-                    android:maxLength="10"
+
+                    android:hint="Celular"
                     android:inputType="text"
-                    android:hint="Celular" />
+                    android:maxLength="10" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Direccion" />
+                android:orientation="vertical"
+
+                android:paddingTop="20dp">
 
                 <EditText
                     android:id="@+id/txtDireccion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Direccion" />
+
+                    android:hint="Direccion"
+                    android:inputType="text" />
             </LinearLayout>
 
             <View
@@ -148,155 +155,184 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Carrera" />
+                android:orientation="vertical"
+
+                android:paddingTop="20dp">
 
                 <EditText
                     android:id="@+id/txtCarrera"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Carrera" />
+
+                    android:hint="Carrera"
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Semestre" />
+                android:orientation="vertical"
+
+                android:paddingTop="20dp">
 
                 <EditText
                     android:id="@+id/txtSemestre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Semestre" />
+                    android:hint="Semestre"
+
+                    android:inputType="text" />
+
+
             </LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:text="Foto" />
+                android:orientation="vertical"
 
+                android:paddingTop="20dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnArchivos"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="handleSelectPhoto"
-                        android:text="Elegir foto" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:visibility="gone"
-                    tools:srcCompat="@tools:sample/avatars" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
                     android:text="Ubicacion" />
 
                 <TextView
+                    android:id="@+id/txtUbicacion"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/txtUbicacion"
                     android:text="Consiguiendo ubicación..." />
-
-<!--                <com.google.android.gms.maps.MapView-->
-<!--                    android:id="@+id/mapView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="300dp" />-->
-
-
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
 
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:text="Archivo" />
+                android:paddingTop="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btnArchivos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/azul"
+                        android:onClick="handleSelectPhoto"
+                        android:text="Elegir foto" />
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:visibility="gone"
+                        tools:srcCompat="@tools:sample/avatars" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:orientation="vertical"-->
+            <!--                android:paddingTop="20dp">-->
+
+            <!--                &lt;!&ndash;                <com.google.android.gms.maps.MapView&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    android:id="@+id/mapView"&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    android:layout_height="300dp" />&ndash;&gt;-->
+
+
+            <!--            </LinearLayout>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="20dp">
+
+                <!--                <TextView-->
+                <!--                    android:layout_width="117dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="Archivo" />-->
 
                 <Button
                     android:id="@+id/btnArchivoPDF"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/azul"
                     android:onClick="handleSelectPdf"
+
                     android:text="Elegir archivo" />
 
                 <TextView
                     android:id="@+id/txtArchivo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="" />
+                    android:text=""
+                    android:visibility="gone" />
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingTop="20dp">
 
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:text="Saludo" />
+                <!--                <TextView-->
+                <!--                    android:layout_width="117dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="Saludo" />-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:gravity="center"
                     android:orientation="horizontal">
-                <Button
-                    android:id="@+id/btnSaludo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="handleRecordAudio"
-                    android:text="Iniciar grabación" />
 
-                <Button
-                    android:id="@+id/btnPlay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="playRecording"
-                    android:text="Escuchar grabación"
-                    android:visibility="invisible" />
+                    <Button
+                        android:id="@+id/btnSaludo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/azul"
+                        android:onClick="handleRecordAudio"
+
+                        android:text="Grabar saludo" />
+
+                    <Button
+                        android:id="@+id/btnPlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/azul"
+                        android:onClick="playRecording"
+                        android:text="Escuchar grabación"
+
+                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
-            
+
             <Button
+                android:id="@+id/btnRegistrar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Registrar usuario"
-                android:id="@+id/btnRegistrar" />
+                android:backgroundTint="@color/naranja"
+                android:layout_marginTop="20dp"
+
+                android:text="Registrar usuario" />
         </LinearLayout>
     </ScrollView>
 

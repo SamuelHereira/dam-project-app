@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.8"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_of_ui" />
     <!-- Agregar Toolbar en la parte superior -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:title="Editar usuario"
         app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Editar usuario"
+        app:titleTextColor="@color/white"
         tools:ignore="MissingConstraints" /> <!-- Agregar el icono de regreso -->
 
     <ScrollView
@@ -22,6 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="20dp"
         app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
@@ -30,6 +37,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
             android:paddingTop="20dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -38,14 +46,16 @@
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:text="Cedula" />
+                    android:text="" />
 
                 <EditText
                     android:id="@+id/txtCedula"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
                     android:ems="10"
                     android:hint="Cedula"
+
                     android:inputType="text" />
             </LinearLayout>
 
@@ -57,85 +67,101 @@
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:text="Nombre" />
+                    android:text="" />
 
                 <EditText
                     android:id="@+id/txtNombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Nombre" />
+
+                    android:hint="Nombre"
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:text="Apellido" />
+                    android:text="" />
 
                 <EditText
                     android:id="@+id/txtApellido"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Apellido" />
+
+                    android:hint="Apellido"
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:hint="Correo" />
+                    android:hint="" />
 
                 <EditText
                     android:id="@+id/txtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Correo" />
+
+                    android:hint="Correo"
+                    android:inputType="text" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:hint="Celular" />
+                    android:hint="" />
 
                 <EditText
                     android:id="@+id/txtCelular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Celular" />
+
+                    android:hint="Celular"
+                    android:inputType="text" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:hint="Direccion" />
+                    android:hint="" />
 
                 <EditText
                     android:id="@+id/txtDireccion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Direccion" />
+                    android:hint="Direccion"
+
+                    android:inputType="text" />
             </LinearLayout>
 
             <View
@@ -148,52 +174,99 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:hint="Carrera" />
+                    android:hint="" />
 
                 <EditText
                     android:id="@+id/txtCarrera"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Carrera" />
+
+                    android:hint="Carrera"
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:hint="Semestre" />
+                    android:hint="" />
 
                 <EditText
                     android:id="@+id/txtSemestre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
                     android:ems="10"
-                    android:inputType="text"
-                    android:hint="Semestre" />
+                    android:hint="Semestre"
+                    android:inputType="text" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="117dp"
+                    android:layout_height="wrap_content"
+                    android:text="Ubicacion" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/txtLatitud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_edit_text"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="Latitud"
+                        android:inputType="text" />
+
+                    <EditText
+                        android:id="@+id/txtLongitud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"                        android:background="@drawable/rounded_edit_text"
+android:layout_marginLeft="10dp"
+                        android:hint="Longitud"
+                        android:inputType="text" />
+                </LinearLayout>
+
+
             </LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:text="Foto" />
+                    android:text="" />
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+            android:gravity="center"
                     android:orientation="horizontal">
 
                     <Button
@@ -201,6 +274,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="handleSelectPhoto"
+
+                        android:backgroundTint="@color/azul"
                         android:text="Cambiar foto" />
 
                 </LinearLayout>
@@ -212,69 +287,41 @@
                     android:visibility="gone"
                     tools:srcCompat="@tools:sample/avatars" />
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="117dp"
-                    android:layout_height="wrap_content"
-                    android:text="Ubicacion" />
 
-               <LinearLayout
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                     android:orientation="horizontal">
-                   <EditText
-                       android:id="@+id/txtLatitud"
-                       android:layout_width="wrap_content"
-                       android:layout_weight="1"
-                       android:layout_height="wrap_content"
-                       android:ems="10"
-                       android:inputType="text"
-                       android:hint="Latitud" />
-                   <EditText
-                       android:id="@+id/txtLongitud"
-                          android:layout_weight="1"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:ems="10"
-                       android:inputType="text"
-                       android:hint="Longitud" />
-               </LinearLayout>
-
-
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:text="Título" />
+                    android:text="" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:gravity="center"
                     android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/btnArchivoPDF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="handleSelectPdf"
-                    android:text="Cambiar archivo" />
 
-                <Button
-                    android:id="@+id/btnDescargarPDF"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="handleDownloadPdf"
-                    android:layout_marginLeft="10dp"
-                    android:visibility="gone"
-                    android:text="Descargar archivo" />
+                    <Button
+                        android:id="@+id/btnArchivoPDF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="handleSelectPdf"
+                        android:backgroundTint="@color/azul"
+                        android:text="Cambiar archivo" />
+
+                    <Button
+                        android:id="@+id/btnDescargarPDF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:onClick="handleDownloadPdf"
+                        android:text="Descargar archivo"
+                        android:backgroundTint="@color/azul"
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
@@ -284,37 +331,44 @@
                     android:id="@+id/txtArchivo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="" />
+                    android:text=""
+                    android:visibility="gone" />
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="117dp"
                     android:layout_height="wrap_content"
-                    android:text="Saludo" />
+                    android:text="" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:gravity="center"
                     android:orientation="horizontal">
+
                     <Button
                         android:id="@+id/btnSaludo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="handleRecordAudio"
+                        android:backgroundTint="@color/azul"
                         android:text="Iniciar grabación" />
 
                     <Button
                         android:id="@+id/btnPlay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:onClick="playRecording"
                         android:layout_marginLeft="8dp"
+                        android:onClick="playRecording"
+                        android:backgroundTint="@color/azul"
                         android:text="Escuchar grabación"
                         android:visibility="gone" />
 
@@ -323,10 +377,11 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/btnRegistrar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Actualizar usuario"
-                android:id="@+id/btnRegistrar" />
+                android:backgroundTint="@color/naranja"
+                android:text="Actualizar usuario" />
         </LinearLayout>
     </ScrollView>
 
